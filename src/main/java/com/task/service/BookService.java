@@ -1,4 +1,21 @@
 package com.task.service;
 
+import com.task.model.dto.CreateBookRequest;
+import com.task.model.dto.BookResponse;
+import com.task.model.dto.UpdateBookRequest;
+
+import java.util.List;
+import java.util.UUID;
+
 public interface BookService {
+
+    BookResponse addBook(CreateBookRequest request);
+
+    BookResponse updateBook(UUID uuid, UpdateBookRequest request);
+
+    void deleteBook(UUID uuid);
+
+    BookResponse getBookById(UUID uuid);
+
+    List<BookResponse> getBooks();
 }

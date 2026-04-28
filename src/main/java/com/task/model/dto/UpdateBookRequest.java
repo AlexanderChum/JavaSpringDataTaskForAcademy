@@ -1,22 +1,22 @@
 package com.task.model.dto;
 
+import com.task.model.annotations.AfterEarliestBook;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-import java.util.UUID;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BookResponse {
-    UUID uuid;
+public class UpdateBookRequest {
     String title;
     String author;
+
+    @PastOrPresent(message = "Год публикации не может быть в будущем")
+    @AfterEarliestBook
     Integer publicationYear;
 }
