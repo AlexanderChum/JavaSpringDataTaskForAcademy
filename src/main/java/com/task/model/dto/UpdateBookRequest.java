@@ -1,6 +1,6 @@
 package com.task.model.dto;
 
-import com.task.model.annotations.AfterEarliestBook;
+import com.task.model.annotations.ValidPublishingYear;
 import jakarta.validation.constraints.PastOrPresent;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,7 +16,6 @@ public class UpdateBookRequest {
     String title;
     String author;
 
-    @PastOrPresent(message = "Год публикации не может быть в будущем")
-    @AfterEarliestBook
+    @ValidPublishingYear
     Integer publicationYear;
 }

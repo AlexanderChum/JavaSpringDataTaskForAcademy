@@ -3,8 +3,9 @@ package com.task.service;
 import com.task.model.dto.CreateBookRequest;
 import com.task.model.dto.BookResponse;
 import com.task.model.dto.UpdateBookRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface BookService {
@@ -17,5 +18,5 @@ public interface BookService {
 
     BookResponse getBookById(UUID uuid);
 
-    List<BookResponse> getBooks();
+    Page<BookResponse> getBooks(Pageable pageable);
 }

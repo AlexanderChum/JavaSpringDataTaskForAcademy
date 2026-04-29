@@ -4,6 +4,9 @@ import com.task.model.Book;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -65,21 +68,16 @@ public class JDBCBookRepository implements BookRepository {
     }
 
     @Override
-    public List<Book> findAll() {
-        String sql = "SELECT * FROM books";
-        return jdbcTemplate.query(sql, rowMapper);
+    public Page<Book> findAll(Pageable pageable) {
+        String sql = "SELECT * FROM books LIMIT ? OFFSET ?";
+        List<Book> books = jdbcTemplate.query(sql, rowMapper, pageable.getPageSize(), pageable.getOffset());
+        Long total = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM books", Long.class);
+        return new PageImpl<>(books, pageable, total == null ? 0L : total);
     }
 
     @Override
     public void deleteById(UUID id) {
         String sql = "DELETE FROM books WHERE id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    @Override
-    public boolean existsById(UUID id) {
-        String sql = "SELECT COUNT(*) FROM books WHERE id = ?";
-        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
-        return count != null && count > 0;
     }
 }

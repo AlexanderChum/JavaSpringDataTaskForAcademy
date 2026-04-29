@@ -11,11 +11,12 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +27,7 @@ public class BookServiceImpl implements BookService {
     BookMapper mapper;
 
     @Override
+    @Transactional
     public BookResponse addBook(CreateBookRequest request) {
         Book book = mapper.toModel(request);
         log.info("Книга обработана маппером в сервисе и отправляется в репозиторий");
@@ -33,6 +35,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public BookResponse updateBook(UUID uuid, UpdateBookRequest request) {
         Book book = getIfExists(uuid);
         log.info("Книга получена из репозитория для обновления");
@@ -50,6 +53,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void deleteBook(UUID uuid) {
         getIfExists(uuid);
         log.info("Проверка на существование книги пройдена");
@@ -57,6 +61,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public BookResponse getBookById(UUID uuid) {
         Book book = getIfExists(uuid);
         log.info("Книга получена из репозитория");
@@ -64,11 +69,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookResponse> getBooks() {
+    @Transactional(readOnly = true)
+    public Page<BookResponse> getBooks(Pageable pageable) {
         log.info("Получен запрос сервисом на все книги");
-        return repository.findAll().stream()
-                .map(mapper::toDto)
-                .collect(Collectors.toList());
+        return repository.findAll(pageable)
+                .map(mapper::toDto);
     }
 
     private Book getIfExists(UUID uuid) {

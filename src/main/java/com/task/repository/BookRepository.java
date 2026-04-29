@@ -1,6 +1,8 @@
 package com.task.repository;
 
 import com.task.model.Book;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,9 +13,7 @@ public interface BookRepository {
 
     Optional<Book> findById(UUID uuid);
 
-    List<Book> findAll();
+    Page<Book> findAll(Pageable pageable);
 
     void deleteById(UUID uuid);
-
-    boolean existsById(UUID uuid);
 }
